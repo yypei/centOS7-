@@ -1,0 +1,57 @@
+一、连接服务器
+1、我租的是centOS Linux操作系统   本地系统是win10
+2、为连接服务器做准备：安装xshell（ps：安装启动xshell是会报错0x000007b，因此安装directx修复工具并启动修复有可能会需要升级到增强版去修复c++文件）  
+3、启动xshell 点开左上角的文件菜单下面的新建根据提示连接服务器。
+4、通过账号密码登录服务器
+
+
+二、创建用户
+1、通过命令行(adduser 用户名)创建用户
+2、设置/重置用户密码（passwd 用户名）输入新的密码需要两次输入一致
+
+三、设置用户权限
+1、使用有root权限的账号执行命令
+2、chmod -v u+m /etc/sudoers（让sudoers文件变为可写）
+3、vim /etc/sudoers
+4、给用户添加root权限 格式为：用户名 ALL=(ALL) ALL
+5、保存并退出文件
+6、chmod -v u-m /etc/sudoers（让sudoers文件变为不可写）
+
+
+四、创建用户组
+1、建工作组 
+groupadd testgroup //新建test工作组
+
+2、新建用户同时增加工作组 
+useradd -g testgroup testuser //新建testuser用户并增加到testgroup工作组
+
+//注：：-g 所属组 -d 家目录 -s 所用的SHELL
+
+3、给已有的用户增加工作组 
+usermod -G groupname username
+
+4、临时关闭 
+在/etc/shadow文件中属于该用户的行的第二个字段（密码）前面加上#就可以了。想恢复该用户，去掉即可 
+//或者使用如下命令关闭用户账号： 
+passwd testuser –l 
+//重新释放： 
+passwd testuser –u
+
+5、永久性删除用户账号 
+userdel testuser 
+groupdel testgroup 
+usermod –G testgroup testuser //（强制删除该用户的主目录和主目录下的所有文件和子目录）
+
+6、显示用户信息 
+id user 
+cat /etc/passwd
+
+补充:查看用户和用户组的方法 
+用户列表文件：/etc/passwd 
+用户组列表文件：/etc/group 
+查看系统中有哪些用户：cut -d : -f 1 /etc/passwd 
+查看可以登录系统的用户：cat /etc/passwd | grep -v /sbin/nologin | cut -d : -f 1 
+查看用户操作：w命令(需要root权限) 
+查看某一用户：w 用户名 
+查看登录用户：who 
+查看用户登录历史记录：last
